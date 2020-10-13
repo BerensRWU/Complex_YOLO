@@ -50,9 +50,9 @@ The Astyx HiRes is a dataset from Astyx for object detection for autonomous driv
            └── valid.txt
 ```
 # Evaluation
-To evaluate the valid split we need a function for IoU and AP. For an confidence threshold of 0.5, non-maximum-supression threshold of 0.5 and a IoU threshold of 0.5 we get an average precision (AP):
+To evaluate the valid split we need a function for IoU and AP. For an confidence threshold of 0.5, non-maximum-supression threshold of 0.5 and a IoU threshold of 0.5 we get an average precision (AP) in the range of:
 
  Model - Sensor/Class              | Car     | 
 | ----------------------- |:--------|
-| ComplexYOLO LiDAR       | 68.89 |
-| ComplexYOLO RADAR       | 67.90   |
+| ComplexYOLO LiDAR       | 65 - 75 |
+| ComplexYOLO RADAR       | 65 - 75   |
