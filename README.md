@@ -32,9 +32,7 @@ python visualize.py
   * ```nms_thres```: If estimated bounding boxes overlap with an IoU greater than the ```nms_thres``` only the bounding box with highest confidence remains. Default ```0.5```.
   * ```split```: Which split to use ```valid```, ```train```. Default ```valid```.
   
-To use the ComplexYOLO bounding box estimator we need non-maximum-supression. For non-maximum-supression we need the IoU:
-
-<img src="http://www.sciweavers.org/upload/Tex2Img_1600935884/render.png" height="40px">
+To use the ComplexYOLO bounding box estimator we need non-maximum-supression. For non-maximum-supression we need the IoU.
 
 # Astyx HiRes
 The Astyx HiRes is a dataset from Astyx for object detection for autonomous driving. Astyx has a sensor setup consisting of camera, LiDAR, RADAR. Additional information can be found here: [Dataset Paper](https://www.astyx.com/fileadmin/redakteur/dokumente/Automotive_Radar_Dataset_for_Deep_learning_Based_3D_Object_Detection.PDF) and [Specification](https://www.astyx.com/fileadmin/redakteur/dokumente/Astyx_Dataset_HiRes2019_specification.pdf)
