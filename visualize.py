@@ -14,7 +14,7 @@ import utils.config as cnf
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model_def", type=str, default="config/yolov3-custom.cfg", help="path to model definition file")
+    parser.add_argument("--model_def", type=str, default="network/yolov3-custom.cfg", help="path to model definition file")
     parser.add_argument("--weights_path", type=str, default="checkpoints/", help="path to weights file")
     parser.add_argument("--conf_thres", type=float, default=0.5, help="object confidence threshold")
     parser.add_argument("--nms_thres", type=float, default=0.5, help="iou thresshold for non-maximum suppression")
