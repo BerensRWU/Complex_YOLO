@@ -6,6 +6,7 @@ This repository contains a PyTorch implementation of [ComplexYOLO](https://arxiv
     $ git clone https://github.com/BerensRWU/ComplexYOLO/
     
 ### Requirements
+The script was tested on the following systems with the following versions:
 #### Ubuntu 18.04.5 LTS
 To run the program you need to install those libraries with dependencies:
   * torch (Tested with pytorch version 1.6.0, torchvision 0.7.0)
