@@ -40,7 +40,7 @@ python visualize.py
   * ```model_def```: Path to model definition file. Default ```config/yolov3-custom.cfg```.
   * ```weights_path```: Path where the weights are saved. Default ```checkpoints```.
   * ```conf_thres```: If bounding boxes are estimated, only those with a confidence greater than thethreshold will be used. Default ```0.5```.
-  * ```nms_thres```: If estimated bounding boxes overlap with an IoU greater than the ```nms_thres``` only the bounding box with highest confidence remains. Default ```0.5```.
+  * ```nms_thres```: If estimated bounding boxes overlap with an IoU greater than the ```nms_thres``` only the bounding box with highest confidence remains. Default ```0.2```.
   * ```split```: Which split to use ```valid```, ```train```. Default ```valid```.
   
 To use the ComplexYOLO bounding box estimator we need non-maximum-supression. For non-maximum-supression we need the IoU.
@@ -61,7 +61,7 @@ The Astyx HiRes is a dataset from Astyx for object detection for autonomous driv
            └── valid.txt
 ```
 # Evaluation
-To evaluate the valid split we need a function for IoU and AP. For an confidence threshold of 0.5, non-maximum-supression threshold of 0.5 and a IoU threshold of 0.5 we get an average precision (AP) in the range of:
+To evaluate the valid split we need a function for IoU and AP. For an confidence threshold of 0.5, non-maximum-supression threshold of 0.2 and a IoU threshold of 0.5 we get an average precision (AP) in the range of:
 
  Model - Sensor/Class | Car     | 
 | ------------------- |:--------|
