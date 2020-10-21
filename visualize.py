@@ -17,7 +17,7 @@ if __name__ == "__main__":
     parser.add_argument("--model_def", type=str, default="network/yolov3-custom.cfg", help="path to model definition file")
     parser.add_argument("--weights_path", type=str, default="checkpoints/", help="path to weights file")
     parser.add_argument("--conf_thres", type=float, default=0.5, help="object confidence threshold")
-    parser.add_argument("--nms_thres", type=float, default=0.5, help="iou thresshold for non-maximum suppression")
+    parser.add_argument("--nms_thres", type=float, default=0.2, help="iou thresshold for non-maximum suppression")
     parser.add_argument("--split", type=str, default="valid", help="text file having image lists in dataset")
     parser.add_argument("--radar", default=False, action="store_true" , help="Use Radar Data")
     parser.add_argument("--estimate_bb", default=False, action="store_true", help="Whether to estimate Bounding Boxes")
