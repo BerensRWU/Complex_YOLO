@@ -15,8 +15,11 @@ def compute_iou(box, boxes):
     """Calculates IoU of the given box with the array of the given boxes.
     The IoU is the fraction between the area of the intersection and the union 
         the bounding boxes.
-    box: a polygon
-    boxes: a vector of polygons
+    Input:
+    box: a shapley polygon
+    boxes: a list of shapley polygons
+    Output:
+    numpy array of all iou values between box and the boxes in boxes
     """
     
     raise NotImplementedError # this is you job to write this Function.
