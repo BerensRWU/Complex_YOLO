@@ -16,7 +16,6 @@ class AstyxYOLODataset(AstyxDataset):
         super().__init__(root_dir=root_dir, split=split)
 
         self.split = split
-        self.max_objects = 100
         self.radar = radar
 
         assert mode == 'EVAL', 'Invalid mode: %s' % mode
@@ -38,17 +37,23 @@ class AstyxYOLODataset(AstyxDataset):
             calib = self.get_calib(sample_id)
             
             if self.radar:
+                # If we use RADAR we do only load the data
                 pcData = self.get_radar(sample_id)
             else:
+                # If we use LiDAR we have to transform the point cloud to the RADAR coordinate system
                 pcData = self.get_lidar(sample_id)
-                intensity = pcData[:,3].reshape(-1,1)
-                pcData = calib.lidar2ref(pcData[:,0:3])
-                pcData = np.concatenate([pcData,intensity],1)
+                intensity = pcData[:,3].reshape(-1,1) # save the intensity
+                pcData = calib.lidar2ref(pcData[:,0:3]) # transformation
+                pcData = np.concatenate([pcData,intensity],1) # concatenate the transformed the point cloud with the intensity
+            
+            # Read all bounding boxes
             labels, noObjectLabels = bev_utils.read_labels_for_bevbox(objects)
             
-
+            # Remove points of the point cloud that are not in the range we are focusing
             b = bev_utils.removePoints(pcData, cnf.boundary)
+            # Generate the BEV map
             rgb_map = bev_utils.makeBVFeature(b, cnf.DISCRETIZATION, cnf.boundary)
+            # Transform the Groundtruth such that it fits for the model
             target = bev_utils.build_yolo_target(labels)
 
             ntargets = 0
@@ -60,9 +65,21 @@ class AstyxYOLODataset(AstyxDataset):
                 if t.sum(0):
                     targets[i, 1:] = torch.from_numpy(t)
             
-            img = torch.from_numpy(rgb_map).type(torch.FloatTensor)
+            img = torch.from_numpy(rgb_map).type(torch.FloatTensor) # cast to torch.tensor
             
             return sample_id, img, targets
 
     def __len__(self):
         return len(self.sample_id_list)
+
+    def collate_fn(self, batch):
+        paths, imgs, targets = list(zip(*batch))
+        # Remove empty placeholder targets
+        targets = [boxes for boxes in targets if boxes is not None]
+        # Add sample index to targets
+        for i, boxes in enumerate(targets):
+            boxes[:, 0] = i
+        targets = torch.cat(targets, 0)
+        # Resize images to input shape
+        imgs = torch.stack([resize(img, cnf.BEV_WIDTH) for img in imgs])
+        return paths, imgs, targets
