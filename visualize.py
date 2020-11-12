@@ -24,7 +24,7 @@ def visualize_func(bev_maps, targets, img_detections, sample_id, estimate_bb):
             # get the yaw from the euler angle value
             yaw = np.arctan2(im,re)
             # Draw green groundtruth
-            bev_utils.drawRotatedBox(RGB_Map, x, y, w, l, yaw, [0, 255, 0])
+            drawRotatedBox(RGB_Map, x, y, w, l, yaw, [0, 255, 0])
 
         # same visualization as for targets
         if estimate_bb:    
@@ -34,6 +34,17 @@ def visualize_func(bev_maps, targets, img_detections, sample_id, estimate_bb):
                 for x, y, w, l, im, re, conf, cls_conf, cls_pred in detections:
                     yaw = np.arctan2(im, re)
                     # Draw red predicted box
-                    bev_utils.drawRotatedBox(RGB_Map, x, y, w, l, yaw, [0, 0, 255])
+                    drawRotatedBox(RGB_Map, x, y, w, l, yaw, [0, 0, 255])
         
         cv2.imwrite("output/%06d.png" % sample_id, RGB_Map) # note cv2 RGB->BGR
+        
+        
+def drawRotatedBox(img,x,y,w,l,yaw,color):
+    # get the corners of the rotated bounding box
+    bev_corners = bev_utils.get_corners(x, y, w, l, yaw)
+    corners_int = bev_corners.reshape(-1, 1, 2).astype(int)
+    # draw box
+    cv2.polylines(img, [corners_int], True, color, 2)
+    corners_int = bev_corners.reshape(-1, 2)
+    # draw line that shows where the front of the car is
+    cv2.line(img, (corners_int[0, 0], corners_int[0, 1]), (corners_int[3, 0], corners_int[3, 1]), (255, 255, 0), 2)
