@@ -1,4 +1,3 @@
-import os
 import numpy as np
 from utils.astyx_dataset import AstyxDataset
 import utils.astyx_bev_utils as bev_utils
@@ -23,7 +22,7 @@ class AstyxYOLODataset(AstyxDataset):
 
         self.sample_id_list = [int(sample_id) for sample_id in self.image_idx_list]
 
-        print('Load %s samples from %s' % (mode, self.imageset_dir))
+        print('Load %s samples from %s' % (mode, self.dataset_dir))
         print('Done: total %s samples %d' % (mode, len(self.sample_id_list)))
 
     def __getitem__(self, index):
@@ -43,7 +42,7 @@ class AstyxYOLODataset(AstyxDataset):
                 # If we use LiDAR we have to transform the point cloud to the RADAR coordinate system
                 pcData = self.get_lidar(sample_id)
                 intensity = pcData[:,3].reshape(-1,1) # save the intensity
-                pcData = calib.lidar2ref(pcData[:,0:3]) # transformation
+                pcData = calib.lidar2ref(pcData[:,0:3]) # transformation from lidar coordinatesystem to radar coordinatesystem
                 pcData = np.concatenate([pcData,intensity],1) # concatenate the transformed the point cloud with the intensity
             
             # Read all bounding boxes
@@ -53,14 +52,16 @@ class AstyxYOLODataset(AstyxDataset):
             b = bev_utils.removePoints(pcData, cnf.boundary)
             # Generate the BEV map
             rgb_map = bev_utils.makeBVFeature(b, cnf.DISCRETIZATION, cnf.boundary)
-            # Transform the Groundtruth such that it fits for the model
+            # Transform the groundtruth such that it fits for the model
             target = bev_utils.build_yolo_target(labels)
 
             ntargets = 0
+            # count the number of ground truth objects, because in build_yolo_target an array that is lager than the number of objects is generated
             for i, t in enumerate(target):
                 if t.sum(0):
                     ntargets += 1            
             targets = torch.zeros((ntargets, 8))
+            # store the targets now in an array that fits the number of ground truth objects
             for i, t in enumerate(target):
                 if t.sum(0):
                     targets[i, 1:] = torch.from_numpy(t)
@@ -73,6 +74,7 @@ class AstyxYOLODataset(AstyxDataset):
         return len(self.sample_id_list)
 
     def collate_fn(self, batch):
+        # this function defines how batches should be concatenated
         paths, imgs, targets = list(zip(*batch))
         # Remove empty placeholder targets
         targets = [boxes for boxes in targets if boxes is not None]
