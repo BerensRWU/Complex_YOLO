@@ -1,5 +1,4 @@
 import numpy as np
-import os
 import json
 import utils.config as cnf
 import math
@@ -76,4 +75,3 @@ def read_label(label_filename):
     objects = [Object3d(obj) for obj in data["objects"]]
 
     return objects
-
