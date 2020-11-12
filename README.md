@@ -119,8 +119,3 @@ To evaluate the valid split we need a function for IoU and AP. For an confidence
 | ------------------- |:--------|
 | ComplexYOLO LiDAR   | 65 - 75 |
 | ComplexYOLO RADAR   | 65 - 75 |
-
-# Google Colab
-The visualize.ipynb is for those who want to run the program in google colab.
-
-You have to upload the other scripts to colab. Also you have to upload the data files to colab or to your google drive(if you upload it to google drive you must give colab acces to your drive, and change in utils->config->root_dir to "drive/My Drive/dataset" or wherever you saved the dataset). 
