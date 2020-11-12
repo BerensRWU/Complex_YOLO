@@ -16,7 +16,7 @@ def get_batch_statistics_rotated_bbox(predictions, targets, iou_threshold):
     """
     batch_metrics = []
     
-    # loop over all predictions
+    # loop over all batches
     for sample_i, prediction in enumerate(predictions):
 
         if output is None:
