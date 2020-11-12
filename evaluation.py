@@ -27,7 +27,8 @@ def get_batch_statistics_rotated_bbox(predictions, targets, iou_threshold):
         pred_labels = prediction[:, -1] # predicted label
 
         true_positives = np.zeros(pred_boxes.shape[0])
-
+        
+        # get the ground truth of the batch sample_i
         annotations = targets[targets[:, 0] == sample_i][:, 1:]
         target_labels = annotations[:, 0] if len(annotations) else []
         if len(annotations):
