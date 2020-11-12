@@ -19,7 +19,7 @@ def get_batch_statistics_rotated_bbox(predictions, targets, iou_threshold):
     # loop over all batches
     for sample_i, prediction in enumerate(predictions):
 
-        if output is None:
+        if prediction is None:
             continue
 
         pred_boxes = prediction[:, :6] # predicted boundig box
