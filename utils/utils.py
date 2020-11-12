@@ -19,12 +19,13 @@ def compute_iou(box, boxes):
     box: a shapley polygon
     boxes: a list of shapley polygons
     Output:
-    numpy array of all iou values between box and the boxes in boxes
+    numpy array of all iou values between box and the boxes in boxes (dtype float32)
     """
     
     raise NotImplementedError # this is you job to write this Function.
-
+    
 def to_cpu(tensor):
+    # cast from conda (if you have a gpu) to cpu
     return tensor.detach().cpu()
 
 def parse_model_config(path):
@@ -114,11 +115,15 @@ def non_max_suppression_rotated_bbox(prediction, conf_thres=0.95, nms_thres=0.4)
         # Perform non-maximum suppression
         keep_boxes = []
         while detections.size(0):
+            # calculate the iou of one detection to all remaining detections, and check if the iou is greater than the non maximum supression threshold
             large_overlap = rotated_bbox_iou_polygon(detections[0, :6], detections[:, :6]) > nms_thres
-            large_overlap = torch.from_numpy(large_overlap)
+            large_overlap = torch.from_numpy(large_overlap) # cast to torch tensor
+            
+            # check which predictions have the same category
             label_match = detections[0, -1] == detections[:, -1]
             # Indices of boxes with lower confidence scores, large IOUs and matching labels
             invalid = large_overlap & label_match
+            # get the confidence (weight) of the overlapping boxes
             weights = detections[invalid, 6:7]
             # Merge overlapping bboxes by order of confidence
             detections[0, :6] = (weights * detections[invalid, :6]).sum(0) / weights.sum()
