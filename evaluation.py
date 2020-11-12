@@ -4,7 +4,7 @@ import torch
 from utils.utils import rotated_bbox_iou_polygon
 
 def get_batch_statistics_rotated_bbox(predictions, targets, iou_threshold):
-    """ Compute true positives, predicted scores and predicted labels per sample.
+    """ Compute true positives and predicted scores per sample.
     Input:
         predictions: numpy array of all predictied bounding boxes, after non maximum supression
         targets: numpy array of all ground truth bounding boxes
