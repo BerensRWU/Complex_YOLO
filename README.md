@@ -85,7 +85,7 @@ To evaluate the prediction we can use the following command:
 python main.py --estimate_bb --evaluate
 ```
 ## Colab
-If you want to use colab you click on "main.ipynb" and then on "open in colab". After you locked in your google account, you have to upload the scripts to the  files in the notebook. Because of the size the Astyx data should be uploaded to your drive and change in utils->config->root_dir to "drive/My Drive/dataset" or wherever you saved the dataset. Instead of flags we can specify in the fourth cell what we want to do. The rest are the same steps as for the terminal way.
+If you want to use colab you click on "main.ipynb" and then on "open in colab". After you locked in your google account, you have to upload the scripts to the  files in the notebook. Because of the size the Astyx data should be uploaded to your drive and change in utils->config->root_dir to "drive/My Drive/dataset" or wherever you saved the dataset. Instead of flags we can specify in the fourth cell what we want to do.
 
 # Astyx HiRes
 The Astyx HiRes is a dataset from Astyx for object detection for autonomous driving. Astyx has a sensor setup consisting of camera, LiDAR, RADAR. Additional information can be found here: [Dataset Paper](https://www.astyx.com/fileadmin/redakteur/dokumente/Automotive_Radar_Dataset_for_Deep_learning_Based_3D_Object_Detection.PDF) and [Specification](https://www.astyx.com/fileadmin/redakteur/dokumente/Astyx_Dataset_HiRes2019_specification.pdf)
