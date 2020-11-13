@@ -3,40 +3,32 @@ import torch
 
 from utils.utils import rotated_bbox_iou_polygon
 
-def get_batch_statistics_rotated_bbox(predictions, targets, iou_threshold):
-    """ Compute true positives and predicted scores per sample.
+def get_batch_statistics_rotated_bbox(outputs, targets, iou_threshold):
+    """ Compute true positives, predicted scores and predicted labels per sample.
     Input:
         predictions: numpy array of all predictied bounding boxes, after non maximum supression
         targets: numpy array of all ground truth bounding boxes
         iou_threshodl: int, threshold which prediction is a positive detection or not
-        
-    Output:
-        bool list of true positive and false positive detections
-        list of the score values of the predictions
     """
     batch_metrics = []
-    
-    # loop over all batches
-    for sample_i, prediction in enumerate(predictions):
+    for sample_i in range(len(outputs)):
 
-        if prediction is None:
+        if outputs[sample_i] is None:
             continue
 
-        pred_boxes = prediction[:, :6] # predicted boundig box
-        pred_scores = prediction[:, 6] # predicted score / confidence
-        pred_labels = prediction[:, -1] # predicted label
+        output = outputs[sample_i]
+        pred_boxes = output[:, :6]
+        pred_scores = output[:, 6]
+        pred_labels = output[:, -1]
 
         true_positives = np.zeros(pred_boxes.shape[0])
-        
-        # get the ground truth of the batch sample_i
+
         annotations = targets[targets[:, 0] == sample_i][:, 1:]
         target_labels = annotations[:, 0] if len(annotations) else []
         if len(annotations):
-            # Here we store the those boxes that are already detected
             detected_boxes = []
             target_boxes = annotations[:, 1:]
-            
-            # loop over all predictions
+
             for pred_i, (pred_box, pred_label) in enumerate(zip(pred_boxes, pred_labels)):
 
                 # If targets are found break
@@ -49,30 +41,79 @@ def get_batch_statistics_rotated_bbox(predictions, targets, iou_threshold):
 
                 #iou, box_index = rotated_bbox_iou(pred_box.unsqueeze(0), target_boxes, 1.0, False).squeeze().max(0)
                 ious = rotated_bbox_iou_polygon(pred_box, target_boxes)
+                iou, box_index = torch.from_numpy(ious).max(0)
+
+                if iou >= iou_threshold and box_index not in detected_boxes:
+                    true_positives[pred_i] = 1
+                    detected_boxes += [box_index]
+        batch_metrics.append([true_positives, pred_scores])
+    return batch_metrics
                 
-                raise NotImplementedError
-                """
-                Get the maximum iou value for all predictions and the corresponding index.
-                Check if the maxIOU is greater or equal than  iou_threshold and the index not in detected_boxes.
-                    If true set true_positives[pred_i] equal 1 and add the index to detected_boxes.
-                After all loops return the list of true positives and the list of the scores"""
-                
-def calculate_ap(true_positives, pred_scores, ngt):
-        """
+def compute_ap(recall, precision):
+    """ Compute the average precision, given the recall and precision curves.
+    Code originally from https://github.com/rbgirshick/py-faster-rcnn.
+
+    # Arguments
+        recall:    The recall curve (list).
+        precision: The precision curve (list).
+    # Returns
+        The average precision as computed in py-faster-rcnn.
+    """
+    # correct AP calculation
+    # first append sentinel values at the end
+    mrec = np.concatenate(([0.0], recall, [1.0]))
+    mpre = np.concatenate(([0.0], precision, [0.0]))
+
+    # compute the precision envelope
+    for i in range(mpre.size - 1, 0, -1):
+        mpre[i - 1] = np.maximum(mpre[i - 1], mpre[i])
+
+    # to calculate area under PR curve, look for points
+    # where X axis (recall) changes value
+    i = np.where(mrec[1:] != mrec[:-1])[0]
+
+    # and sum (\Delta recall) * prec
+    ap_all = np.sum((mrec[i + 1] - mrec[i]) * mpre[i + 1])
+    
+    ap_11 = 0.
+    for t in np.arange(0., 1.1, 0.1):
+        if np.sum(recall >= t) == 0:
+            p = 0
+        else:
+            p = np.max(precision[recall >= t])
+        ap_11 = ap_11 + p / 11.
+        
+    return ap_all, ap_11
+
+
+def evaluate(tp, conf, n_gt):
+    """ Compute the average precision, given the recall and precision curves.
+    Source: https://github.com/rafaelpadilla/Object-Detection-Metrics.
+    # Arguments
         tp:    True positives (list).
         conf:  Objectness value from 0-1 (list).
-        return: ap
-        
-        Steps:
-        1. Calculate a list of False positves (1 - true positves)
-        2. Sort the lists according to the scores
-        3. Calculate the Cumulative sums of the sorted Lists
-        4. Calculate the precision and recall for every entry of the cumulative sums
-            precision = cumsumTP/(cumsumTP + cumsumFP)
-            recall = cumsumTP / ngt
-        5. Concatenate 0 / 1 to the start/ending of the precision list
-           Concatenate 0 / 0 to the start/ending of the recall list
-        6. Calculate the approximated AP as described in the Lecture ( AP-11, AP-all)
-        """
-        
-        pass
+        n_gt: Number of all ground truht objects
+    # Returns
+        The average precision as computed in py-faster-rcnn.
+    """
+
+    # Sort by objectness
+    i = np.argsort(-conf)
+    tp, conf = tp[i], conf[i]
+
+    # Create Precision-Recall curve and compute AP 
+    ap, p, r = [], [], []
+    # Accumulate FPs and TPs
+    fpc = (1 - tp).cumsum()
+    tpc = (tp).cumsum()
+
+    # Recall
+    recall_curve = tpc / (n_gt + 1e-16)
+
+    # Precision
+    precision_curve = tpc / (tpc + fpc)
+
+    # AP from recall-precision curve
+    ap_all, ap_11 = compute_ap(recall_curve, precision_curve)
+
+    return ap_all, ap_11    
