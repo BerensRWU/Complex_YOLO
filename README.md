@@ -53,12 +53,12 @@ A script for the visualization of the data.
 A script for the detection of bounding boxes from BEV.
 
 ### evaluation.py
-A script for the evaluation of the predicted bounding boxes. Here we need to calculate whether the prediction is a true positive or not and the average precision.
+A script for the evaluation of the predicted bounding boxes. Calculation whether the prediction is a true positive or not and the average precision.
 
 # How to use this Repo for the LiDAR RADAR lecture
 If you want to use this repository for the LiDAR RADAR lecture, you have two ways:
 ## Terminal
-To run on your own machine in the terminal, download this repository. Install python and all requirements. Define the path to the data in utils/config.py it should have the order like in section Astyx HiRes. Now we can run the main function in the terminal:
+To run on your own machine in the terminal, download this repository. Install python and all requirements. Define the path to the data in ```utils/config.py``` it should have the order like in section Astyx HiRes. Now we can run the main function in the terminal:
 ```
 python main.py
 ```
@@ -78,22 +78,12 @@ To visualize and predict we can use the following command:
 ```
 python main.py --estimate_bb --visualize
 ```
-To evaluate the predictions we want to use the average precision, so we need next to a function for the IoU a function for the average precision. In the script ```evaluation.py``` you find funcitons for this, which you have to complete:
-```get_batch_statistics_rotated_bbox(predictions, targets, iou_threshold)``` calculates whether a prediction is a correct prediction (True positive) or not. The input of this function are all predictions, the targets and the IoU threshold. You will start after the calculation of the IoUs between. In the function we loop over the batch and then over the predictions. So the IoU is calculated between one prediction and all ground truth bounding boxes. Now you have to code:
+To evaluate the predictions we use the average precision, so we need next to a function for the IoU a function for the average precision. In the script ```evaluation.py``` you find funcitons for this.
 
-Get the maximum IoU of this prediction and get the corresponding target id. Then check if this IoU is greater than the IoU threshold and if we have not already detect this ground truth object. If it is greater and not already detected, then we store in ```true_positives``` at the index of the prediction a True or 1 and also append to ```detected_boxes``` the index of the ground truth object. Then return the list ```true_positives``` and list of the score values(```pred_scores```).
-
-After this we have to concatenate the lists to one long list for all validation frames. This long list is used for the calculation of the AP in calculate_ap. This function gets the two long lists true_positives, pred_scores and the number of all ground truth objects. To calculate the AP we can do the following steps as known from the lecture:
-1. Calculate a list of False positves (1 - true positves)
-1. Sort the lists according to the scores
-1. Calculate the Cumulative sums of the sorted Lists
-1. Calculate the precision and recall for every entry of the cumulative sums
-    precision = cumsumTP/(cumsumTP + cumsumFP)
-    recall = cumsumTP / ngt
-1. Concatenate 0 / 1 to the start/ending of the precision list
-   Concatenate 0 / 0 to the start/ending of the recall list
-1. Calculate the approximated AP as described in the Lecture ( AP-11, AP-all)
-
+To evaluate the prediction we can use the following command:
+```
+python main.py --estimate_bb --evaluate
+```
 ## Colab
 If you want to use colab you click on "main.ipynb" and then on "open in colab". After you locked in your google account, you have to upload the scripts to the  files in the notebook. Because of the size the Astyx data should be uploaded to your drive and change in utils->config->root_dir to "drive/My Drive/dataset" or wherever you saved the dataset. Instead of flags we can specify in the fourth cell what we want to do. The rest are the same steps as for the terminal way.
 
