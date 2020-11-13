@@ -8,7 +8,7 @@ import torch.utils.data as torch_data
 from models import Darknet
 from detector import detector, setup_detector
 from visualize import visualize_func
-from evaluation import get_batch_statistics_rotated_bbox
+from evaluation import get_batch_statistics_rotated_bbox, evaluate
 
 from utils.astyx_yolo_dataset import AstyxYOLODataset
 import utils.config as cnf
@@ -36,15 +36,15 @@ if __name__ == "__main__":
         model = setup_detector(opt)
         if opt.evaluate:
             ngt = 0 # number of all targets
-            true_positives = []
-            pred_scores = []
-        
+            sample_metrics = []  # List of tuples (TP, confs, pred)
+            labels = []
     # Load the Astyx dataset
     dataset = AstyxYOLODataset(cnf.root_dir, split=opt.split, mode="EVAL", radar=opt.radar)
     data_loader = torch_data.DataLoader(dataset, batch_size=1, shuffle=False, collate_fn=dataset.collate_fn)
 
     # loop over all frames from the split file
     for index, (sample_id, bev_maps, targets) in enumerate(data_loader):
+        print(index, " of ", len(data_loader))
         # Stores detections for each image index
         img_detections = []
         
@@ -58,15 +58,18 @@ if __name__ == "__main__":
             img_detections.extend(predictions)
             # Calculate if the prediction is a true detection
             if opt.evaluate:
+                # Extract labels
+                labels += targets[:, 1].tolist()
                 ngt += len(targets)
-                true_positive, pred_score = get_batch_statistics_rotated_bbox(predictions, targets, opt.iou_thres)
-                """
-                Concatenate all true_positives and pred_scores to two long true_positives and pred_scores lists.
-                """
+                sample_metrics += get_batch_statistics_rotated_bbox(predictions, targets, opt.iou_thres)
                 
         # Visualization of the ground truth and if estimated the predicted boxes
         if opt.visualize:
             visualize_func(bev_maps[0], targets, img_detections, sample_id, opt.estimate_bb)
         
     if opt.estimate_bb and opt.evaluate:
-        AP = calculate_ap(true_positives, pred_scores, ngt)
+        # Concatenate sample statistics
+        true_positives, pred_scores = [np.concatenate(x, 0) for x in list(zip(*sample_metrics))]
+        ap_all, ap_11 = evaluate(true_positives, pred_scores, ngt)
+        
+        print("Approximation of the average precision (AP).\nAll point approximation: %.3f.\n11 point approximation: %.3f." %(ap_all, ap_11))
