@@ -37,7 +37,6 @@ if __name__ == "__main__":
         if opt.evaluate:
             ngt = 0 # number of all targets
             sample_metrics = []  # List of tuples (TP, confs, pred)
-            labels = []
     # Load the Astyx dataset
     dataset = AstyxYOLODataset(cnf.root_dir, split=opt.split, mode="EVAL", radar=opt.radar)
     data_loader = torch_data.DataLoader(dataset, batch_size=1, shuffle=False, collate_fn=dataset.collate_fn)
@@ -58,8 +57,6 @@ if __name__ == "__main__":
             img_detections.extend(predictions)
             # Calculate if the prediction is a true detection
             if opt.evaluate:
-                # Extract labels
-                labels += targets[:, 1].tolist()
                 ngt += len(targets)
                 sample_metrics += get_batch_statistics_rotated_bbox(predictions, targets, opt.iou_thres)
                 
