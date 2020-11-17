@@ -20,8 +20,13 @@ To run the program you need to install those libraries with dependencies:
   * json
   * numpy 
   * shapely
+
+#### Google Colab
+In google colab you do not need to install any libraries. But you will need a google account. If you want to use colab you click on "main.ipynb" and then on "open in colab". After you loged into your google account, you have to upload the scripts and weights to the files in the notebook. Because of the size the Astyx data should be uploaded to your drive and change in ```utils->config->root_dir``` the root directory to ```drive/My Drive/dataset``` or wherever you saved the dataset. 
+
+Instead of flags we can specify in the fourth cell what we want to do. ```visualize=True``` then we will visualize the data, ```estimate_bb=True``` the bounding boxes will be estimated, ```evaluate=True``` the performance of the detector will be evaluated (Then ```estimate_bb``` must also be true). For RADAR data we have to set ```radar=True```.  
   
-#### Installation
+#### Installation for working on your machine
 An easy way to install libaries on Windows and Linux is with [anaconda](https://www.anaconda.com/) or [miniconda](https://docs.conda.io/en/latest/miniconda.html). Then you can install e.g. torch:
 ```
 conda install pytorch torchvision cpuonly -c pytorch
@@ -39,11 +44,6 @@ conda install pytorch torchvision cpuonly -c pytorch
 1. Run ```main.py --estimate_bb --visualize``` to estimate the bounding boxes and to visualize the estimation together with the ground truth.
 1. Run ```main.py --estimate_bb --evaluate``` to estimate the bounding boxes and to evaluate them.
 1. If we want to use RADAR data and detector instead of LiDAR we have to use the flag ```radar```. E.g. ```main.py --estimate_bb --evaluate --radar``` will evaluate the performance of the RADAR detector.
-
-#### Google Colab
-In google colab you do not need to install any libraries. But you will need a google account. If you want to use colab you click on "main.ipynb" and then on "open in colab". After you loged into your google account, you have to upload the scripts and weights to the files in the notebook. Because of the size the Astyx data should be uploaded to your drive and change in ```utils->config->root_dir``` the root directory to ```drive/My Drive/dataset``` or wherever you saved the dataset. 
-
-Instead of flags we can specify in the fourth cell what we want to do. ```visualize=True``` then we will visualize the data, ```estimate_bb=True``` the bounding boxes will be estimated, ```evaluate=True``` the performance of the detector will be evaluated (Then ```estimate_bb``` must also be true). For RADAR data we have to set ```radar=True```.
 
 ## Scripts
 main.py.
