@@ -2,11 +2,8 @@
 This repository contains a PyTorch implementation of [ComplexYOLO](https://arxiv.org/pdf/1803.06199.pdf). It is build to be applied on the data from the Astyx Dataset.
 
 ## Installation
-#### Clone the project and install requirements
-    $ git clone https://github.com/BerensRWU/ComplexYOLO/
-    
 ### Requirements
-The script was tested on the following systems with the following versions:
+The repo was tested on the following systems with the following versions:
 #### Ubuntu 18.04.5 LTS
 To run the program you need to install those libraries with dependencies:
   * torch (Tested with pytorch version 1.6.0, torchvision 0.7.0)
@@ -22,14 +19,33 @@ To run the program you need to install those libraries with dependencies:
   * cv2 
   * json
   * numpy 
-  * shapely 
+  * shapely
   
-An easy way to install this is with [anaconda](https://www.anaconda.com/) or [miniconda](https://docs.conda.io/en/latest/miniconda.html). Then you can install e.g. torch:
+#### Installation
+An easy way to install libaries on Windows and Linux is with [anaconda](https://www.anaconda.com/) or [miniconda](https://docs.conda.io/en/latest/miniconda.html). Then you can install e.g. torch:
 ```
 conda install pytorch torchvision cpuonly -c pytorch
 ```
-  
-## Skripts
+
+#### Steps
+1. Install all requirments
+1. $ git clone https://github.com/BerensRWU/ComplexYOLO/  
+1. Save the Astyx dataset in the folder ```dataset``.(See Section Astyx HiRes).
+1. Run ```main.py --visualize``` to visualize the validation split of the Astyx dataset.
+1. Download the weights for the RADAR and LiDAR detector from the moodle page of the Lecture.
+1. Save the weights files in a folder ```checkpoints``` in the ```Complex_YOLO``` folder. 
+1. Write the iou function in ```utils.py```.
+1. Run ```main.py --estimate_bb``` to estimate the bounding boxes.
+1. Run ```main.py --estimate_bb --visualize``` to estimate the bounding boxes and to visualize the estimation together with the ground truth.
+1. Run ```main.py --estimate_bb --evaluate``` to estimate the bounding boxes and to evaluate them.
+1. If we want to use RADAR data and detector instead of LiDAR we have to use the flag ```radar```. E.g. ```main.py --estimate_bb --evaluate --radar``` will evaluate the performance of the RADAR detector.
+
+#### Google Colab
+In google colab you do not need to install any libraries. But you will need a google account. If you want to use colab you click on "main.ipynb" and then on "open in colab". After you loged into your google account, you have to upload the scripts and weights to the files in the notebook. Because of the size the Astyx data should be uploaded to your drive and change in ```utils```->```config```->```root_dir``` to ```drive/My Drive/dataset``` or wherever you saved the dataset. 
+
+Instead of flags we can specify in the fourth cell what we want to do. ```visualize=True``` then we will visualize the data, ```estimate_bb=True``` the bounding boxes will be estimated, ```evaluate=True``` the performance of the detector will be evaluated (Then ```estimate_bb``` must also be true). For RADAR data we have to set ```radar=True```.
+
+## Scripts
 main.py.
 ```
 python main.py
@@ -84,8 +100,6 @@ To evaluate the prediction we can use the following command:
 ```
 python main.py --estimate_bb --evaluate
 ```
-## Colab
-If you want to use colab you click on "main.ipynb" and then on "open in colab". After you locked in your google account, you have to upload the scripts to the  files in the notebook. Because of the size the Astyx data should be uploaded to your drive and change in utils->config->root_dir to "drive/My Drive/dataset" or wherever you saved the dataset. Instead of flags we can specify in the fourth cell what we want to do.
 
 # Astyx HiRes
 The Astyx HiRes is a dataset from Astyx for object detection for autonomous driving. Astyx has a sensor setup consisting of camera, LiDAR, RADAR. Additional information can be found here: [Dataset Paper](https://www.astyx.com/fileadmin/redakteur/dokumente/Automotive_Radar_Dataset_for_Deep_learning_Based_3D_Object_Detection.PDF) and [Specification](https://www.astyx.com/fileadmin/redakteur/dokumente/Astyx_Dataset_HiRes2019_specification.pdf)
@@ -103,7 +117,7 @@ The Astyx HiRes is a dataset from Astyx for object detection for autonomous driv
            └── valid.txt
 ```
 # Evaluation
-To evaluate the valid split we need a function for IoU and AP. For an confidence threshold of 0.5, non-maximum-supression threshold of 0.2 and a IoU threshold of 0.5 we get an average precision (AP) in the range of:
+To evaluate the performance of the detectors on the valid split, we need a function for IoU and AP. For an confidence threshold of 0.5, non-maximum-supression threshold of 0.2 and a IoU threshold of 0.5 we get an average precision (AP) in the range of:
 
  Model - Sensor/Class | Car     | 
 | ------------------- |:--------|
