@@ -41,7 +41,7 @@ conda install pytorch torchvision cpuonly -c pytorch
 1. If we want to use RADAR data and detector instead of LiDAR we have to use the flag ```radar```. E.g. ```main.py --estimate_bb --evaluate --radar``` will evaluate the performance of the RADAR detector.
 
 #### Google Colab
-In google colab you do not need to install any libraries. But you will need a google account. If you want to use colab you click on "main.ipynb" and then on "open in colab". After you loged into your google account, you have to upload the scripts and weights to the files in the notebook. Because of the size the Astyx data should be uploaded to your drive and change in ```utils```->```config```->```root_dir``` to ```drive/My Drive/dataset``` or wherever you saved the dataset. 
+In google colab you do not need to install any libraries. But you will need a google account. If you want to use colab you click on "main.ipynb" and then on "open in colab". After you loged into your google account, you have to upload the scripts and weights to the files in the notebook. Because of the size the Astyx data should be uploaded to your drive and change in ```utils->config->root_dir``` to ```drive/My Drive/dataset``` or wherever you saved the dataset. 
 
 Instead of flags we can specify in the fourth cell what we want to do. ```visualize=True``` then we will visualize the data, ```estimate_bb=True``` the bounding boxes will be estimated, ```evaluate=True``` the performance of the detector will be evaluated (Then ```estimate_bb``` must also be true). For RADAR data we have to set ```radar=True```.
 
