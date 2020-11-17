@@ -28,7 +28,7 @@ conda install pytorch torchvision cpuonly -c pytorch
 ```
 
 #### Steps
-1. Install all requirments
+1. Install all requirements
 1. Download or clone this repo by using ```git clone https://github.com/BerensRWU/ComplexYOLO/``` in the terminal.
 1. Save the Astyx dataset in the folder ```dataset``.(See Section Astyx HiRes).
 1. Run ```main.py --visualize``` to visualize the ground truth data of the validation split from the Astyx dataset.
