@@ -7,7 +7,7 @@ The repo was tested on the following systems with the following versions:
 #### Ubuntu 18.04.5 LTS
 To run the program you need to install those libraries with dependencies:
   * torch (Tested with pytorch version 1.6.0, torchvision 0.7.0)
-  * cv2 
+  * cv2 (Tested with opencv-python 4.1.1)
   * json
   * numpy 
   * shapely 
@@ -16,7 +16,7 @@ To run the program you need to install those libraries with dependencies:
 #### Windows 10
 To run the program you need to install those libraries with dependencies:
   * torch (Tested with pytorch version 1.5.1, torchvision 0.6.1)
-  * cv2 (Tested with opencv-python 4.1.1)
+  * cv2
   * json
   * numpy 
   * shapely
