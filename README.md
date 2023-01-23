@@ -1,5 +1,5 @@
 # ComplexYOLO
-This repository contains a PyTorch implementation of [ComplexYOLO](https://arxiv.org/pdf/1803.06199.pdf). It is build to be applied on the data from the Astyx Dataset.
+This repository contains a PyTorch implementation of [ComplexYOLO](https://arxiv.org/pdf/1803.06199.pdf) using YOLO version 3. It is build to be applied on the data from the Astyx Dataset.
 
 ## Installation
 ### Requirements
